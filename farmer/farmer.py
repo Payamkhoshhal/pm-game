@@ -10,7 +10,7 @@ for x in range(8):
     
     imgs.append(pygame.transform.scale(
         pygame.image.load(os.path.join("game_assets/potato",  add_str +".png")),
-        (64, 64)))
+        (32, 32)))
 
 
 class Farmer:

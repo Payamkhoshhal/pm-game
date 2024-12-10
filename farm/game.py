@@ -7,10 +7,10 @@ class Game:
 
     def __init__(self):
         # background
-        self.width = 700 #900 
-        self.height = 400 #600 
+        self.width = 1000 
+        self.height = 800 
         self.win = pygame.display.set_mode((self.width , self.height))
-        self.bg = pygame.image.load(os.path.join("game_assets/background","s-bg.png"))
+        self.bg = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/background","new_bg.png")) , (1500, 1500) )
         self.click = (0,0)
         pygame.font.init()  # Initialize the font module
         
@@ -53,8 +53,8 @@ class Game:
         self.camera_x, self.camera_y = 0, 0
 
         # Scrolling Settings
-        self.SCROLL_SPEED = 5
-        self.EDGE_MARGIN = 5
+        self.SCROLL_SPEED = 10
+        self.EDGE_MARGIN = 2
 
     def run(self):
         while self.running:
@@ -79,21 +79,24 @@ class Game:
                     print(pos)
                     # Get Mouse Position
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            # Edge Scrolling Logic
-            if mouse_x <= self.EDGE_MARGIN:  # Left edge
-                self.camera_x = max(self.camera_x - self.SCROLL_SPEED, 0)
-                self.which_arrow = 2
-            elif mouse_x >= self.width - self.EDGE_MARGIN:  # Right edge
-                self.camera_x = min(self.camera_x + self.SCROLL_SPEED, self.MAP_WIDTH - self.width)
-                self.which_arrow = 1
-            elif mouse_y <= self.EDGE_MARGIN:  # Top edge
-                self.camera_y = max(self.camera_y - self.SCROLL_SPEED, 0)
-                self.which_arrow = 3
-            elif mouse_y >= self.height - self.EDGE_MARGIN:  # Bottom edge
-                self.camera_y = min(self.camera_y + self.SCROLL_SPEED, self.MAP_HEIGHT - self.height)        
-                self.which_arrow = 4
-            else:
-                self.which_arrow = 0
+
+            if (mouse_x > 0 or mouse_x <= self.width) and  (mouse_y >= 0 or mouse_y <= self.height): # this condition can be removed
+                # Edge Scrolling Logic
+                if mouse_x <= self.EDGE_MARGIN:  # Left edge
+                    self.camera_x = max(self.camera_x - self.SCROLL_SPEED, 0)
+                    self.which_arrow = 2
+                elif mouse_x >= self.width - self.EDGE_MARGIN:  # Right edge
+                    self.camera_x = min(self.camera_x + self.SCROLL_SPEED, self.MAP_WIDTH - self.width)
+                    self.which_arrow = 1
+                elif mouse_y <= self.EDGE_MARGIN:  # Top edge
+                    self.camera_y = max(self.camera_y - self.SCROLL_SPEED, 0)
+                    self.which_arrow = 3
+                elif mouse_y >= self.height - self.EDGE_MARGIN:  # Bottom edge
+                    self.camera_y = min(self.camera_y + self.SCROLL_SPEED, self.MAP_HEIGHT - self.height)        
+                    self.which_arrow = 4
+                else:
+                    self.which_arrow = 0
+
 
             self.draw(self.farmer_pos, self.camera_x, self.camera_y, self.which_arrow)
 
