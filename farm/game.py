@@ -37,7 +37,7 @@ class Game:
         # Initialize objects
         # tree
         upgrade_times = [10 , 30]
-        self.tree = Tree(120, 100, 100, 150, upgrade_times)
+        self.tree = Tree(120, 200, 200, 150, upgrade_times)
 
         # farmer
         self.farmer = Farmer() # create an instance from class Farmer
@@ -73,6 +73,8 @@ class Game:
                         if self.farmer.farmer_pre_clicked:
                             self.farmer.is_allowed_to_move = True
                             self.farmer_pos = event.pos 
+                            self.farmer.cam_x_moment = self.camera_x
+                            self.farmer.cam_y_moment =  self.camera_y
                             self.farmer.farmer_pre_clicked = True
                             print('farmer is clicked') 
                              
@@ -83,10 +85,10 @@ class Game:
 
             if (mouse_x > 0 or mouse_x <= self.width) and  (mouse_y >= 0 or mouse_y <= self.height): # this condition can be removed
                 # Edge Scrolling Logic
-                if mouse_x <= self.EDGE_MARGIN:  # Left edge
+                if mouse_x <= self.EDGE_MARGIN :  # Left edge
                     self.camera_x = max(self.camera_x - self.SCROLL_SPEED, 0)
                     self.which_arrow = 2
-                elif mouse_x >= self.width - self.EDGE_MARGIN:  # Right edge
+                elif mouse_x >= self.width - self.EDGE_MARGIN  :  # Right edge
                     self.camera_x = min(self.camera_x + self.SCROLL_SPEED, self.MAP_WIDTH - self.width)
                     self.which_arrow = 1
                 elif mouse_y <= self.EDGE_MARGIN:  # Top edge
@@ -99,8 +101,8 @@ class Game:
                     self.which_arrow = 0
 
 
-            self.draw(self.farmer_pos, self.camera_x, self.camera_y, self.which_arrow)
-
+            self.draw(self.farmer_pos, self.camera_x, self.camera_y, self.which_arrow )
+ 
         pygame.quit()
 
  
@@ -152,7 +154,7 @@ class Game:
 
 
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
-        self.win.blit(self.bg , (-cam_x, -cam_y))
+        self.win.blit(self.bg , (- cam_x, - cam_y))
         self.win.blit(self.base_home,(400-cam_x , 400-cam_y))
         
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -171,6 +173,8 @@ class Game:
         p = self.click
         cam = (cam_x, cam_y)
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
+        cam_x = 1000
+        cam_y = 800
         self.tree.draw(self.win, cam_x , cam_y)
         
         # Draw the menu

@@ -26,7 +26,7 @@ class Farmer:
         self.path = [(500,220),(370, 280),(517, 445),(460 , 500), (532, 560),(838, 455),(851, 370),(660, 189)]
         self.x = self.path[0][0]
         self.y = self.path[0][1]
-        self.speed = 2
+        self.speed = 5
         self.flipped = False  
         self.direction = 'left'
         self.img = self.imgs[self.animation_count]
@@ -34,6 +34,11 @@ class Farmer:
         self.farmer_clicked = False
         self.farmer_pre_clicked = False
         self.is_allowed_to_move = False
+        self.is_moving = False
+        # we need it because when we are moving the map, the clicked position will change 
+        # if we add the cam_x each time so we have to store the cam_x at that moment to keep it constant
+        self.cam_x_moment = 0
+        self.cam_y_moment = 0
 
     def draw(self,win,cam_x , cam_y , pos):
         """
@@ -49,37 +54,39 @@ class Farmer:
             pygame.draw.circle(surface,(210, 140, 70,150),(self.range,self.range),self.range, 0)
             win.blit(surface,(self.x - cam_x  - 70, self.y - cam_y - 70))
 
-        
-        win.blit(self.img, (self.x - cam_x , self.y - cam_y))
-
-        self.rect = self.img.get_rect(topleft=(self.x - cam_x, self.y - cam_y ))
+        if self.is_moving:
+            current_x = self.x
+            current_y = self.y
+        else:
+            current_x = self.x - cam_x
+            current_y = self.y - cam_y 
 
         self.img = self.imgs[self.animation_count] 
-        if self.is_allowed_to_move:
+        if self.is_allowed_to_move :
             # if we reached to the point don't need to move anymore
-            next_x = pos[0]
-            next_y = pos[1]
-            current_x = self.x - cam_x
-            current_y = self.y - cam_y
+            next_x = pos[0] + self.cam_x_moment
+            next_y = pos[1] + self.cam_y_moment
+           
             if abs(next_x - current_x) > self.speed and abs(next_y - current_y) > self.speed:
-                print(f'cam_x {cam_x} , cam_y {cam_y} ')
-                print(f'current_x {current_x} , current_y {current_y}')
-                print(f'next_x {next_x} , next_y{next_y}')
-                print(f'self.x { self.x} , self.y {self.y}')
+                self.is_moving = True
                 self.move_to(pos, cam_x , cam_y)
+                
             else:
                 self.is_allowed_to_move = False
+                self.is_moving = False
 
+        self.rect = self.img.get_rect(topleft=(self.x - cam_x, self.y - cam_y ))
+        win.blit(self.img, (self.x - cam_x , self.y - cam_y))
 
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
 
-    def move_to(self, pos , cam_x , cam_y):
-        next_x = pos[0] 
-        next_y = pos[1]
+    def move_to(self, pos , cam_x , cam_y ):
+        next_x = pos[0] + self.cam_x_moment
+        next_y = pos[1] + self.cam_y_moment
         
-        current_x = self.x - cam_x 
-        current_y = self.y - cam_y
+        current_x = self.x 
+        current_y = self.y
 
         self.animation_count += 1
         if self.animation_count >= len(self.imgs):
