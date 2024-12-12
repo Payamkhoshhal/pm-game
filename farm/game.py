@@ -10,7 +10,7 @@ class Game:
         self.width = 1000 
         self.height = 800 
         self.win = pygame.display.set_mode((self.width , self.height))
-        self.bg = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/background","new_bg.png")) , (1500, 1500) )
+        self.bg = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/background","grass-bg.png")) , (1500, 1500) )
         self.click = (0,0)
         pygame.font.init()  # Initialize the font module
         
@@ -29,7 +29,7 @@ class Game:
         self.arrow_d =pygame.transform.scale( pygame.image.load(os.path.join("game_assets/arrows","down-arrow.png")),(45,45))
         self.is_d_arrow = False
         
-        
+        self.base_home = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/buildings","base-home.png")),(100,100)) 
 
         self.clock = pygame.time.Clock()
         self.running = True
@@ -71,6 +71,7 @@ class Game:
 
                     if not self.farmer.farmer_clicked:
                         if self.farmer.farmer_pre_clicked:
+                            self.farmer.is_allowed_to_move = True
                             self.farmer_pos = event.pos 
                             self.farmer.farmer_pre_clicked = True
                             print('farmer is clicked') 
@@ -152,8 +153,9 @@ class Game:
 
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
         self.win.blit(self.bg , (-cam_x, -cam_y))
+        self.win.blit(self.base_home,(400-cam_x , 400-cam_y))
+        
         mouse_x, mouse_y = pygame.mouse.get_pos()
-
         if self.which_arrow == 1: 
             self.win.blit(self.arrow_r, (mouse_x -40  , mouse_y - 20))
         elif self.which_arrow == 2: 
@@ -168,10 +170,9 @@ class Game:
 
         p = self.click
         cam = (cam_x, cam_y)
-        #self.farmer_pos = tuple(p_i - c_i for p_i, c_i in zip(self.farmer_pos, cam))
-        self.farmer.draw(self.win,self.farmer_pos )
+        self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
         self.tree.draw(self.win, cam_x , cam_y)
-
+        
         # Draw the menu
         self.main_menu.draw(self.win)
 

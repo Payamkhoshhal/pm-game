@@ -27,50 +27,59 @@ class Farmer:
         self.x = self.path[0][0]
         self.y = self.path[0][1]
         self.speed = 2
-        self.step = 1
         self.flipped = False  
         self.direction = 'left'
         self.img = self.imgs[self.animation_count]
-        self.rect = self.img.get_rect(topleft=(self.x, self.y))
+        #self.rect = self.img.get_rect(topleft=(self.x - cam_x , self.y - cam_y))
         self.farmer_clicked = False
         self.farmer_pre_clicked = False
+        self.is_allowed_to_move = False
 
-    def draw(self,win,pos):
+    def draw(self,win,cam_x , cam_y , pos):
         """
         Draws the Farmer with the given images
         :param win: sufrace
         :return: None 
         """
+        
+
         if self.farmer_clicked == True:
             self.range = 100
             surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
             pygame.draw.circle(surface,(210, 140, 70,150),(self.range,self.range),self.range, 0)
-            win.blit(surface,(self.x- 65 , self.y - 65))
+            win.blit(surface,(self.x - cam_x  - 70, self.y - cam_y - 70))
 
-      
+        
+        win.blit(self.img, (self.x - cam_x , self.y - cam_y))
+
+        self.rect = self.img.get_rect(topleft=(self.x - cam_x, self.y - cam_y ))
 
         self.img = self.imgs[self.animation_count] 
-        win.blit(self.img, (self.x , self.y))
+        if self.is_allowed_to_move:
+            # if we reached to the point don't need to move anymore
+            next_x = pos[0]
+            next_y = pos[1]
+            current_x = self.x - cam_x
+            current_y = self.y - cam_y
+            if abs(next_x - current_x) > self.speed and abs(next_y - current_y) > self.speed:
+                print(f'cam_x {cam_x} , cam_y {cam_y} ')
+                print(f'current_x {current_x} , current_y {current_y}')
+                print(f'next_x {next_x} , next_y{next_y}')
+                print(f'self.x { self.x} , self.y {self.y}')
+                self.move_to(pos, cam_x , cam_y)
+            else:
+                self.is_allowed_to_move = False
 
-        # if we reached to the point don't need to move anymore
-        next_x = pos[0] 
-        next_y = pos[1]
-        current_x = self.x 
-        current_y = self.y
-        if abs(next_x - current_x) > self.speed and abs(next_y - current_y) > self.speed:
-            self.move_to(pos)
-
-        self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
 
-    def move_to(self, pos):
+    def move_to(self, pos , cam_x , cam_y):
         next_x = pos[0] 
         next_y = pos[1]
         
-        current_x = self.x 
-        current_y = self.y
+        current_x = self.x - cam_x 
+        current_y = self.y - cam_y
 
         self.animation_count += 1
         if self.animation_count >= len(self.imgs):
@@ -100,8 +109,8 @@ class Farmer:
             self.direction = 'left'
 
         # Update the current position
-        self.x += dx
-        self.y += dy
+        self.x = self.x + dx
+        self.y = self.y + dy 
 
         # Check if close enough to the target to stop
         if abs(next_x - current_x) < self.speed and abs(next_y - current_y) < self.speed:
