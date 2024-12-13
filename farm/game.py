@@ -38,7 +38,7 @@ class Game:
         # tree
         self.trees = []
         self.upgrade_times = [10 , 30]
-        self.trees.append(Tree(120, 200, 200, 150, self.upgrade_times))
+        #self.trees.append(Tree(120, 200, 200, 150, self.upgrade_times))
 
         # farmer
         self.farmer = Farmer() # create an instance from class Farmer
@@ -58,6 +58,9 @@ class Game:
         self.SCROLL_SPEED = 10
         self.EDGE_MARGIN = 2
 
+        # Drag object
+        self.drag_object = False
+
     def run(self):
         while self.running:
             self.clock.tick(60)
@@ -68,7 +71,13 @@ class Game:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
-
+                    if self.drag_object:
+                        if self.menu_result == 'Add tree':
+                            tree_x = event.pos[0]  + self.camera_x - 75
+                            tree_y = event.pos[1]  + self.camera_y - 75
+                            self.trees.append(Tree(tree_x, tree_y, 150, 150, self.upgrade_times))
+                            self.drag_object = False
+                    
                     self.which_object_is_clicked(event.pos)
 
                     if not self.farmer.farmer_clicked:
@@ -84,8 +93,11 @@ class Game:
                         self.menu_result = self.menu.which_button_is_clicked(event.pos) 
                         if self.menu_result: 
                             self.menu.menu_visible = False
-                            if self.menu_result == 'Add tree':
-                                self.trees.append(Tree(120, 400, 400, 150, self.upgrade_times))
+                            self.drag_object = True
+                        else:
+                            self.drag_object = False
+
+                                
 
                     self.click = pos
                     print(pos)
@@ -192,7 +204,7 @@ class Game:
        
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
 
-        for tree in self.trees:
+        for tree in self.trees[::-1]:
             tree.draw(self.win, cam_x , cam_y)
         
         # Draw the menu

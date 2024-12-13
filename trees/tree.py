@@ -34,6 +34,7 @@ class Tree:
         self.upgrade_times = upgrade_times
         self.upgrade_start_time = None
         self.tree_clicked = False
+        self.rect = self.img.get_rect(topleft=(self.tree_x , self.tree_y))
 
     def draw(self, win ,camera_x , camera_y):
         
@@ -46,6 +47,8 @@ class Tree:
 
         self.rect = self.img.get_rect(topleft=(self.tree_x - camera_x , self.tree_y - camera_y))
         # Draw the tree as a rectangle
+        print('treex , treey from class trees :', self.tree_x , self.tree_y)
+        print(self.tree_x - camera_x , self.tree_y - camera_y)
         win.blit(self.img ,(self.tree_x - camera_x , self.tree_y - camera_y))
 
         # Display the tree level above the tree
