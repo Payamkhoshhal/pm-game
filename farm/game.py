@@ -36,8 +36,9 @@ class Game:
 
         # Initialize objects
         # tree
-        upgrade_times = [10 , 30]
-        self.tree = Tree(120, 200, 200, 150, upgrade_times)
+        self.trees = []
+        self.upgrade_times = [10 , 30]
+        self.trees.append(Tree(120, 200, 200, 150, self.upgrade_times))
 
         # farmer
         self.farmer = Farmer() # create an instance from class Farmer
@@ -46,6 +47,7 @@ class Game:
         # menu
         self.main_menu = MainMenu()
         self.menu = Menu()
+        self.menu_result = None
 
 
         self.MAP_WIDTH, self.MAP_HEIGHT = self.bg.get_size()
@@ -77,7 +79,14 @@ class Game:
                             self.farmer.cam_y_moment =  self.camera_y
                             self.farmer.farmer_pre_clicked = True
                             print('farmer is clicked') 
-                             
+
+                    if self.menu.menu_visible:
+                        self.menu_result = self.menu.which_button_is_clicked(event.pos) 
+                        if self.menu_result: 
+                            self.menu.menu_visible = False
+                            if self.menu_result == 'Add tree':
+                                self.trees.append(Tree(120, 400, 400, 150, self.upgrade_times))
+
                     self.click = pos
                     print(pos)
                     # Get Mouse Position
@@ -108,49 +117,59 @@ class Game:
  
     
     def which_object_is_clicked(self, clicked_pos):
-
-        if self.tree.is_clicked(clicked_pos):
-
-            # enable the tree clicked variable
-            self.tree.tree_clicked = True
+        flag = 0
+        for tree in self.trees:
+            if tree.is_clicked(clicked_pos):
+                # enable the tree clicked variable
+                tree.tree_clicked = True
+                flag = 1
            
-            # disable other objects
-            self.farmer.farmer_clicked =  False 
-            self.farmer.farmer_pre_clicked = False
-            self.menu.menu_visible = False
+                # disable other objects
+                self.farmer.farmer_clicked =  False 
+                self.farmer.farmer_pre_clicked = False
+                self.menu.menu_visible = False
+            else:
+                tree.tree_clicked = False
+        if flag == 0:
+            if self.farmer.is_clicked(clicked_pos):
 
-        elif self.farmer.is_clicked(clicked_pos):
+                # enable the farmer clicked variable
+                self.farmer.farmer_clicked = True
+                self.farmer.farmer_pre_clicked = False
+                # disable other objects 
+                for tree in self.trees:
+                    tree.tree_clicked = False
 
-            # enable the farmer clicked variable
-            self.farmer.farmer_clicked = True
-            self.farmer.farmer_pre_clicked = False
-            # disable other objects 
-            self.tree.tree_clicked = False
-            self.menu.menu_visible = False
-           
+                self.menu.menu_visible = False
 
-        elif self.main_menu.is_clicked(clicked_pos):
 
-            # enable main menu object
-            self.main_menu.visible = False
-            self.menu.menu_visible = True
-            # disable other objects
-            self.farmer.farmer_clicked = False
-            self.tree.tree_clicked = False
-            self.farmer.farmer_pre_clicked = False
-            
-        elif self.menu.is_clicked(clicked_pos):
-            # we don't need to disable other object since they are alrady disabled when we see this menu
-            pass
+            elif self.main_menu.is_clicked(clicked_pos):
 
-        else:
-            # disable all the objects
-            if self.farmer.farmer_clicked == True:
+                # enable main menu object
+                self.main_menu.visible = False
+                self.menu.menu_visible = True
+                # disable other objects
                 self.farmer.farmer_clicked = False
-                self.farmer.farmer_pre_clicked = True
-                
-            self.tree.tree_clicked = False
-            self.menu.menu_visible = False
+                for tree in self.trees:
+                    tree.tree_clicked = False            
+                self.farmer.farmer_pre_clicked = False
+
+            elif self.menu.is_clicked(clicked_pos):
+                # we don't need to disable other object since they are alrady disabled when we see this menu
+                self.farmer.farmer_pre_clicked = False
+                self.farmer.farmer_clicked = False
+                for tree in self.trees:
+                    tree.tree_clicked = False
+
+            else:
+                # disable all the objects
+                if self.farmer.farmer_clicked == True:
+                    self.farmer.farmer_clicked = False
+                    self.farmer.farmer_pre_clicked = True
+
+                for tree in self.trees:
+                    tree.tree_clicked = False
+                self.menu.menu_visible = False
 
 
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
@@ -170,19 +189,18 @@ class Game:
                 # Draw Default Cursor Substitute (Small Circle)
             pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 5)
 
-        p = self.click
-        cam = (cam_x, cam_y)
+       
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
-        cam_x = 1000
-        cam_y = 800
-        self.tree.draw(self.win, cam_x , cam_y)
+
+        for tree in self.trees:
+            tree.draw(self.win, cam_x , cam_y)
         
         # Draw the menu
         self.main_menu.draw(self.win)
 
         self.menu.draw(self.win)
 
-
+        p = self.click
         pygame.draw.circle(self.win, (255,0,0) , (p[0],p[1]), 5, 0) # help to see where i click
         # Update the display
         pygame.display.flip()

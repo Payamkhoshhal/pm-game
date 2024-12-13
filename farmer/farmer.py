@@ -51,8 +51,11 @@ class Farmer:
         if self.farmer_clicked == True:
             self.range = 100
             surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
-            pygame.draw.circle(surface,(210, 140, 70,150),(self.range,self.range),self.range, 0)
-            win.blit(surface,(self.x - cam_x  - 70, self.y - cam_y - 70))
+            pygame.draw.ellipse(surface,(210, 140, 70,150),(0 ,  0 , 200, 120))
+            rotated_surface = pygame.transform.rotate(surface, - 20)  # Rotate by 30 degrees
+            #surface_rect = rotated_surface.get_rect(center=(screen_x, screen_y))
+            #screen.blit(rotated_surface, surface_rect.topleft)
+            win.blit(rotated_surface,(self.x - cam_x  - 200 , self.y - cam_y - 60))
 
         if self.is_moving:
             current_x = self.x

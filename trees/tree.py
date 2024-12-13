@@ -29,7 +29,6 @@ class Tree:
         self.img = self.imgs[0]
         self.tree_x = x
         self.tree_y = y
-        self.rect = self.img.get_rect(topleft=(x, y))
         self.level = 0 
         self.state = 'normal'
         self.upgrade_times = upgrade_times
@@ -37,19 +36,22 @@ class Tree:
         self.tree_clicked = False
 
     def draw(self, win ,camera_x , camera_y):
+        
         if self.tree_clicked == True:
             self.range = 100
             surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
-            pygame.draw.circle(surface,(0,255,0,100),(self.range,self.range),self.range, 0)
-            win.blit(surface,(self.tree_x- 40 , self.tree_y - 40))
+            pygame.draw.ellipse(surface,(0,255,0,100),(0 ,  0 , 200, 120))
+            rotated_surface = pygame.transform.rotate(surface, - 20)  
+            win.blit(rotated_surface,(self.tree_x - camera_x  - 150 , self.tree_y - camera_y ))
 
+        self.rect = self.img.get_rect(topleft=(self.tree_x - camera_x , self.tree_y - camera_y))
         # Draw the tree as a rectangle
         win.blit(self.img ,(self.tree_x - camera_x , self.tree_y - camera_y))
 
         # Display the tree level above the tree
-        font = pygame.font.Font(None, 36)
-        level_text = font.render(f"Level: {self.level}", True, (0, 0, 0))
-        win.blit(level_text, (self.tree_x + 20 , self.tree_y - 30))
+        #font = pygame.font.Font(None, 36)
+        #level_text = font.render(f"Level: {self.level}", True, (0, 0, 0))
+        #win.blit(level_text, (self.tree_x + 20 , self.tree_y - 30))
 
         self.update()
         
