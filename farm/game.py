@@ -3,6 +3,9 @@ import os
 from farmer.farmer import Farmer
 from trees.tree import Tree
 from menu.menu import Menu , MainMenu
+from loading.load import Loading 
+from properties.properties import WoodLog
+
 class Game:
 
     def __init__(self):
@@ -35,9 +38,12 @@ class Game:
         self.running = True
 
         # Initialize objects
+        # woodlog  
+        self.woodlog = WoodLog()
+
         # tree
         self.trees = []
-        self.upgrade_times = [10 , 30]
+        #self.upgrade_times = [10 , 30]
         #self.trees.append(Tree(120, 200, 200, 150, self.upgrade_times))
 
         # farmer
@@ -75,7 +81,7 @@ class Game:
                         if self.menu_result == 'Add tree':
                             tree_x = event.pos[0]  + self.camera_x - 75
                             tree_y = event.pos[1]  + self.camera_y - 75
-                            self.trees.append(Tree(tree_x, tree_y, 150, 150, self.upgrade_times))
+                            self.trees.append(Tree(tree_x, tree_y, 150, 150))
                             self.drag_object = False
                     
                     self.which_object_is_clicked(event.pos)
@@ -187,7 +193,7 @@ class Game:
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
         self.win.blit(self.bg , (- cam_x, - cam_y))
         self.win.blit(self.base_home,(400-cam_x , 400-cam_y))
-        
+
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if self.which_arrow == 1: 
             self.win.blit(self.arrow_r, (mouse_x -40  , mouse_y - 20))
@@ -206,11 +212,18 @@ class Game:
 
         for tree in self.trees[::-1]:
             tree.draw(self.win, cam_x , cam_y)
+            collect_wood_from_each_tree = tree.calculate_woodlog_score()
+            if collect_wood_from_each_tree != 0: 
+                self.woodlog.score = self.woodlog.score + collect_wood_from_each_tree        
+
+
         
-        # Draw the menu
+        #  always stay on screen stuff
         self.main_menu.draw(self.win)
 
         self.menu.draw(self.win)
+
+        self.woodlog.draw(self.win )
 
         p = self.click
         pygame.draw.circle(self.win, (255,0,0) , (p[0],p[1]), 5, 0) # help to see where i click
