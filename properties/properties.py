@@ -1,8 +1,26 @@
 import pygame
 import os
 
+pygame.font.init()  # Initialize the font module
+font = pygame.font.Font(os.path.join("game_assets/fonts", "JungleAdventurer.ttf"), 48) 
 
+def render_text_with_stroke(text, font, text_color, stroke_color, stroke_size=2):
+    base_text = font.render(text, True, text_color)
+    width, height = base_text.get_size()
+    surface = pygame.Surface((width + stroke_size * 2, height + stroke_size * 2), pygame.SRCALPHA)
 
+    # Render stroke around the text
+    for dx in range(-stroke_size, stroke_size+1):
+        for dy in range(-stroke_size, stroke_size+1):
+            if dx != 0 or dy != 0:  # Avoid center duplication
+                stroke_text = font.render(text, True, stroke_color)
+                surface.blit(stroke_text, (dx + stroke_size, dy + stroke_size))
+
+    # Render main text on top
+    surface.blit(base_text, (stroke_size, stroke_size))
+    return surface
+
+################### Classes
 class ShowLevel:
     def __init__(self):
         self.imgs = []
@@ -29,3 +47,4 @@ class WoodLog:
         score_lable = font.render(f"{self.score} x", True, (101, 67, 33))
         sl_width , sl_heigt = score_lable.get_size()
         win.blit(score_lable, (self.x - 5 - sl_width , self.y + 12 ))
+    

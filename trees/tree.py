@@ -2,7 +2,8 @@ import pygame
 import os
 import time 
 from loading.load import Loading  
-from properties.properties import ShowLevel 
+from properties.properties import ShowLevel, render_text_with_stroke  as rtws
+
 
 # Colors
 WHITE = (255, 255, 255)
@@ -29,12 +30,10 @@ class Tree:
         self.img = self.imgs[0]
         self.tree_x = x
         self.tree_y = y
-        self.state = 'normal'
-        self.upgrade_start_time = None
         self.tree_clicked = False
         self.rect = self.img.get_rect(topleft=(self.tree_x , self.tree_y))
         self.level = 0 
-        self.upgrade_times = [3 , 120 , 300]
+        self.upgrade_times = [15 , 120 , 300]
         self.is_updating = True # first time that we call this class we will wait for 15 sec
         self.tree_updating = Loading()
         self.upgrade_start_time = time.time()
@@ -57,7 +56,15 @@ class Tree:
             self.rect = self.img.get_rect(topleft=(self.tree_x - camera_x , self.tree_y - camera_y))
             win.blit(self.img ,(self.tree_x - camera_x , self.tree_y - camera_y))
         else:
-            self.tree_updating.draw(win, camera_x , camera_y, self.tree_x - 20 , self.tree_y - 20)
+            self.tree_updating.draw(win, camera_x , camera_y, self.tree_x - 20 , self.tree_y - 20 , self.upgrade_times[self.level] )
+            # loaing timer
+            font = pygame.font.Font(None, 34)
+            remaining_time = self.upgrade_times[self.level] - (time.time() - self.upgrade_start_time) 
+
+            text_surface = rtws(time.strftime("%Hh %Mm %Ss", time.gmtime(remaining_time)), font, (210, 140, 70), (0, 0, 0))
+            
+            win.blit(text_surface, (self.tree_x - camera_x - 40 , self.tree_y - camera_y + 100  ))
+
             self.update()
 
         # Display the tree level above the tree
@@ -89,7 +96,6 @@ class Tree:
         """Complete the upgrade if enough time has passed."""
         if self.is_updating and self.upgrade_start_time:
             elapsed_time = time.time() - self.upgrade_start_time
-            print(elapsed_time)
             required_time = self.upgrade_times[self.level]
             if elapsed_time >= required_time:
                 self.level += 1
@@ -100,5 +106,17 @@ class Tree:
 
     def update(self):
         """Check if the upgrade can be completed."""
-        if self.is_updating:
-            self.complete_upgrade()
+        #if self.is_updating:
+        #    self.complete_upgrade()
+        """Complete the upgrade if enough time has passed."""
+        if self.is_updating and self.upgrade_start_time:
+            update_elapsed_time = time.time() - self.upgrade_start_time
+            required_time = self.upgrade_times[self.level]
+            if update_elapsed_time >= required_time:
+                self.level += 1
+                #self.img = self.imgs[self.level]
+                self.is_updating = False
+                self.upgrade_start_time = None
+                print(f"Upgrade to level {self.level} complete!")
+    
+    

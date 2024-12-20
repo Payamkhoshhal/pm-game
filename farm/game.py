@@ -5,6 +5,7 @@ from trees.tree import Tree
 from menu.menu import Menu , MainMenu
 from loading.load import Loading 
 from properties.properties import WoodLog
+from homebases.homebase import HomeBase
 
 class Game:
 
@@ -15,7 +16,6 @@ class Game:
         self.win = pygame.display.set_mode((self.width , self.height))
         self.bg = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/background","grass-bg.png")) , (1500, 1500) )
         self.click = (0,0)
-        pygame.font.init()  # Initialize the font module
         
         # Load arrows 
         self.which_arrow = 0 # none of them
@@ -32,7 +32,6 @@ class Game:
         self.arrow_d =pygame.transform.scale( pygame.image.load(os.path.join("game_assets/arrows","down-arrow.png")),(45,45))
         self.is_d_arrow = False
         
-        self.base_home = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/buildings","base-home.png")),(100,100)) 
 
         self.clock = pygame.time.Clock()
         self.running = True
@@ -55,9 +54,13 @@ class Game:
         self.menu = Menu()
         self.menu_result = None
 
+        # Bases        
+        # home base
+        self.homebase = 
 
-        self.MAP_WIDTH, self.MAP_HEIGHT = self.bg.get_size()
+
         # Camera Position
+        self.MAP_WIDTH, self.MAP_HEIGHT = self.bg.get_size()
         self.camera_x, self.camera_y = 0, 0
 
         # Scrolling Settings
@@ -192,7 +195,6 @@ class Game:
 
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
         self.win.blit(self.bg , (- cam_x, - cam_y))
-        self.win.blit(self.base_home,(400-cam_x , 400-cam_y))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if self.which_arrow == 1: 
