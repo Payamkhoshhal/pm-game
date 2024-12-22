@@ -1,11 +1,13 @@
+from re import I
 import pygame 
 import os
 from farmer.farmer import Farmer
 from trees.tree import Tree
-from menu.menu import Menu , MainMenu
-from loading.load import Loading 
+from menu.menu import Menu  
+
 from properties.properties import WoodLog
-from homebases.homebase import HomeBase
+from bases.homebase import HomeBase
+
 
 class Game:
 
@@ -50,13 +52,12 @@ class Game:
         self.farmer_pos = (self.farmer.x, self.farmer.y)
 
         # menu
-        self.main_menu = MainMenu()
-        self.menu = Menu()
         self.menu_result = None
+        self.menu = Menu()
 
         # Bases        
         # home base
-        self.homebase = 
+        self.homebase = HomeBase()
 
 
         # Camera Position
@@ -98,10 +99,10 @@ class Game:
                             self.farmer.farmer_pre_clicked = True
                             print('farmer is clicked') 
 
-                    if self.menu.menu_visible:
-                        self.menu_result = self.menu.which_button_is_clicked(event.pos) 
+                    if self.menu.hb_menu_visible:
+                        #self.menu_result = self.menu.which_button_is_clicked(event.pos) 
                         if self.menu_result: 
-                            self.menu.menu_visible = False
+                            self.menu.hb_menu_visible = False
                             self.drag_object = True
                         else:
                             self.drag_object = False
@@ -148,7 +149,8 @@ class Game:
                 # disable other objects
                 self.farmer.farmer_clicked =  False 
                 self.farmer.farmer_pre_clicked = False
-                self.menu.menu_visible = False
+                self.menu.hb_menu_visible = False
+                self.homebase.homebase_clicked = False
             else:
                 tree.tree_clicked = False
         if flag == 0:
@@ -161,14 +163,15 @@ class Game:
                 for tree in self.trees:
                     tree.tree_clicked = False
 
-                self.menu.menu_visible = False
+                self.menu.hb_menu_visible = False
+                self.homebase.homebase_clicked = False
 
 
-            elif self.main_menu.is_clicked(clicked_pos):
-
+            elif self.homebase.is_clicked(clicked_pos):
+                # homebase clicked 
+                self.homebase.homebase_clicked = True
                 # enable main menu object
-                self.main_menu.visible = False
-                self.menu.menu_visible = True
+                self.menu.hb_menu_visible = True
                 # disable other objects
                 self.farmer.farmer_clicked = False
                 for tree in self.trees:
@@ -179,6 +182,8 @@ class Game:
                 # we don't need to disable other object since they are alrady disabled when we see this menu
                 self.farmer.farmer_pre_clicked = False
                 self.farmer.farmer_clicked = False
+                self.homebase.homebase_clicked = False
+
                 for tree in self.trees:
                     tree.tree_clicked = False
 
@@ -187,15 +192,16 @@ class Game:
                 if self.farmer.farmer_clicked == True:
                     self.farmer.farmer_clicked = False
                     self.farmer.farmer_pre_clicked = True
-
+                    
                 for tree in self.trees:
                     tree.tree_clicked = False
-                self.menu.menu_visible = False
-
+                self.menu.hb_menu_visible = False
+                self.homebase.homebase_clicked = False
 
     def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
         self.win.blit(self.bg , (- cam_x, - cam_y))
 
+        # Draw arrows directions
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if self.which_arrow == 1: 
             self.win.blit(self.arrow_r, (mouse_x -40  , mouse_y - 20))
@@ -209,23 +215,26 @@ class Game:
                 # Draw Default Cursor Substitute (Small Circle)
             pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 5)
 
-       
+
+        # Draw farmer mr.potato 
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
 
+        # Draw tree and calculate woodlog score
         for tree in self.trees[::-1]:
             tree.draw(self.win, cam_x , cam_y)
             collect_wood_from_each_tree = tree.calculate_woodlog_score()
             if collect_wood_from_each_tree != 0: 
                 self.woodlog.score = self.woodlog.score + collect_wood_from_each_tree        
-
-
-        
-        #  always stay on screen stuff
-        self.main_menu.draw(self.win)
-
-        self.menu.draw(self.win)
-
+        # Draw woodlog score
         self.woodlog.draw(self.win )
+
+        # Draw homebase
+        self.homebase.draw(self.win, cam_x, cam_y)
+
+        # Draw menues
+        # 1- Draw home base menu
+        self.menu.draw_hm_menu(self.win )
+
 
         p = self.click
         pygame.draw.circle(self.win, (255,0,0) , (p[0],p[1]), 5, 0) # help to see where i click
