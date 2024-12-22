@@ -82,12 +82,21 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.drag_object:
-                        if self.menu_result == 'Add tree':
+                        if self.menu_result == 'tree':
                             tree_x = event.pos[0]  + self.camera_x - 75
                             tree_y = event.pos[1]  + self.camera_y - 75
                             self.trees.append(Tree(tree_x, tree_y, 150, 150))
                             self.drag_object = False
-                    
+
+                    if self.menu.hb_menu_visible:
+                        self.menu_result = self.menu.which_button_is_clicked(event.pos) 
+                        if self.menu_result: 
+                            self.menu.hb_menu_visible = False
+                            self.drag_object = True
+                            print('drag object is tru')
+                        else:
+                            self.drag_object = False
+
                     self.which_object_is_clicked(event.pos)
 
                     if not self.farmer.farmer_clicked:
@@ -99,13 +108,7 @@ class Game:
                             self.farmer.farmer_pre_clicked = True
                             print('farmer is clicked') 
 
-                    if self.menu.hb_menu_visible:
-                        #self.menu_result = self.menu.which_button_is_clicked(event.pos) 
-                        if self.menu_result: 
-                            self.menu.hb_menu_visible = False
-                            self.drag_object = True
-                        else:
-                            self.drag_object = False
+                    
 
                                 
 
@@ -132,7 +135,7 @@ class Game:
                     self.which_arrow = 0
 
 
-            self.draw(self.farmer_pos, self.camera_x, self.camera_y, self.which_arrow )
+            self.draw( self.camera_x, self.camera_y)
  
         pygame.quit()
 
@@ -178,14 +181,14 @@ class Game:
                     tree.tree_clicked = False            
                 self.farmer.farmer_pre_clicked = False
 
-            elif self.menu.is_clicked(clicked_pos):
-                # we don't need to disable other object since they are alrady disabled when we see this menu
-                self.farmer.farmer_pre_clicked = False
-                self.farmer.farmer_clicked = False
-                self.homebase.homebase_clicked = False
+            #elif self.menu.is_clicked(clicked_pos):
+            #    # we don't need to disable other object since they are alrady disabled when we see this menu
+            #    self.farmer.farmer_pre_clicked = False
+            #    self.farmer.farmer_clicked = False
+            #    self.homebase.homebase_clicked = False
 
-                for tree in self.trees:
-                    tree.tree_clicked = False
+            #    for tree in self.trees:
+            #        tree.tree_clicked = False
 
             else:
                 # disable all the objects
@@ -198,23 +201,10 @@ class Game:
                 self.menu.hb_menu_visible = False
                 self.homebase.homebase_clicked = False
 
-    def draw(self,farmer_pos, cam_x , cam_y, is_arrow):
+    def draw(self, cam_x , cam_y):
         self.win.blit(self.bg , (- cam_x, - cam_y))
 
-        # Draw arrows directions
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if self.which_arrow == 1: 
-            self.win.blit(self.arrow_r, (mouse_x -40  , mouse_y - 20))
-        elif self.which_arrow == 2: 
-            self.win.blit(self.arrow_l, (mouse_x , mouse_y -20 ))
-        elif self.which_arrow == 3: 
-            self.win.blit(self.arrow_u, (mouse_x -20 , mouse_y ))
-        elif self.which_arrow == 4: 
-            self.win.blit(self.arrow_d, (mouse_x -20 , mouse_y - 40))
-        else:
-                # Draw Default Cursor Substitute (Small Circle)
-            pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 5)
-
+       
 
         # Draw farmer mr.potato 
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )
@@ -235,6 +225,19 @@ class Game:
         # 1- Draw home base menu
         self.menu.draw_hm_menu(self.win )
 
+        # Draw arrows directions
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if self.which_arrow == 1: 
+            self.win.blit(self.arrow_r, (mouse_x -40  , mouse_y - 20))
+        elif self.which_arrow == 2: 
+            self.win.blit(self.arrow_l, (mouse_x , mouse_y -20 ))
+        elif self.which_arrow == 3: 
+            self.win.blit(self.arrow_u, (mouse_x -20 , mouse_y ))
+        elif self.which_arrow == 4: 
+            self.win.blit(self.arrow_d, (mouse_x -20 , mouse_y - 40))
+        else:
+                # Draw Default Cursor Substitute (Small Circle)
+            pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 5)
 
         p = self.click
         pygame.draw.circle(self.win, (255,0,0) , (p[0],p[1]), 5, 0) # help to see where i click
