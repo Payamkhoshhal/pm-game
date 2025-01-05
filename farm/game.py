@@ -47,10 +47,11 @@ class Game:
         self.trees = []
         #self.upgrade_times = [10 , 30]
         #self.trees.append(Tree(120, 200, 200, 150, self.upgrade_times))
-
+        self.max_tree_count = [3,6,12,15] # each element is the level of homebase for eg: level 1 --> max 3 tree
         # farmer
         self.farmer = Farmer() # create an instance from class Farmer
         self.farmer_pos = (self.farmer.x, self.farmer.y)
+        self.is_tree_dragable = 1
 
         # menu
         self.menu_result = None
@@ -78,6 +79,9 @@ class Game:
         self.default_cursor = pygame.SYSTEM_CURSOR_ARROW 
         pygame.mouse.set_cursor(self.default_cursor)
 
+        # Level dict
+        self.home_base_level = 1
+
     def run(self):
         while self.running:
             self.clock.tick(60)
@@ -90,6 +94,7 @@ class Game:
 
                     if self.drag_object:
                         if self.menu_result == 'tree':
+                            
                             tree_x = event.pos[0]  + self.camera_x - 75
                             tree_y = event.pos[1]  + self.camera_y - 75
                             self.trees.append(Tree(tree_x, tree_y, 150, 150))
@@ -101,13 +106,19 @@ class Game:
                         self.menu_result = self.menu.which_button_is_clicked(event.pos) 
                         if self.menu_result: 
                             self.menu.hb_menu_visible = False
-                            self.drag_object = True
-                            self.mouse_is_defult = 0
-                            print('drag object is tru')
+                            if self.menu_result == 'tree' and len(self.trees) <  self.max_tree_count[self.home_base_level - 1]:
+                                    self.drag_object = True
+                                    self.mouse_is_defult = 0
+                                    print('drag object is tru')
                         else:
                             self.drag_object = False
 
                     self.which_object_is_clicked(event.pos)
+                    
+                    if  len(self.trees) >= self.max_tree_count[self.home_base_level - 1]:
+                        self.is_tree_dragable = 0
+                    else: 
+                        self.is_tree_dragable = 1
 
                     if not self.farmer.farmer_clicked:
                         if self.farmer.farmer_pre_clicked:
@@ -231,7 +242,8 @@ class Game:
 
         # Draw menues
         # 1- Draw home base menu
-        self.menu.draw_hm_menu(self.win )
+        self.menu.draw_hm_menu(self.win , self.is_tree_dragable )
+
 
         # Draw arrows directions
         mouse_x, mouse_y = pygame.mouse.get_pos()
