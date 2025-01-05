@@ -35,7 +35,7 @@ class Tree:
         self.level = 0 
         self.upgrade_times = [15 , 120 , 300]
         self.is_updating = True # first time that we call this class we will wait for 15 sec
-        self.tree_updating = Loading()
+        #self.tree_updating = Loading()
         self.upgrade_start_time = time.time()
         self.showlevel = ShowLevel()
         self.wood_collect_start_time = time.time()
@@ -56,9 +56,9 @@ class Tree:
             self.rect = self.img.get_rect(topleft=(self.tree_x - camera_x , self.tree_y - camera_y))
             win.blit(self.img ,(self.tree_x - camera_x , self.tree_y - camera_y))
         else:
-            self.tree_updating.draw(win, camera_x , camera_y, self.tree_x - 20 , self.tree_y - 20 , self.upgrade_times[self.level] )
+            #self.tree_updating.draw(win, camera_x , camera_y, self.tree_x - 20 , self.tree_y - 20 , self.upgrade_times[self.level] )
             # loaing timer
-            font = pygame.font.Font(None, 34)
+            font = pygame.font.Font(None, 25)
             remaining_time = self.upgrade_times[self.level] - (time.time() - self.upgrade_start_time) 
 
             text_surface = rtws(time.strftime("%Hh %Mm %Ss", time.gmtime(remaining_time)), font, (210, 140, 70), (0, 0, 0))

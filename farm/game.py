@@ -4,6 +4,7 @@ import os
 from farmer.farmer import Farmer
 from trees.tree import Tree
 from menu.menu import Menu  
+from mouse.mouse import Mouse
 
 from properties.properties import WoodLog
 from bases.homebase import HomeBase
@@ -71,6 +72,12 @@ class Game:
         # Drag object
         self.drag_object = False
 
+        # Mouse
+        self.mouse_is_defult = 1
+        self.mouse_style = Mouse()
+        self.default_cursor = pygame.SYSTEM_CURSOR_ARROW 
+        pygame.mouse.set_cursor(self.default_cursor)
+
     def run(self):
         while self.running:
             self.clock.tick(60)
@@ -87,12 +94,15 @@ class Game:
                             tree_y = event.pos[1]  + self.camera_y - 75
                             self.trees.append(Tree(tree_x, tree_y, 150, 150))
                             self.drag_object = False
+                            pygame.mouse.set_visible(True)                            
+                            self.mouse_is_defult = 1
 
                     if self.menu.hb_menu_visible:
                         self.menu_result = self.menu.which_button_is_clicked(event.pos) 
                         if self.menu_result: 
                             self.menu.hb_menu_visible = False
                             self.drag_object = True
+                            self.mouse_is_defult = 0
                             print('drag object is tru')
                         else:
                             self.drag_object = False
@@ -109,8 +119,6 @@ class Game:
                             print('farmer is clicked') 
 
                     
-
-                                
 
                     self.click = pos
                     print(pos)
@@ -237,7 +245,10 @@ class Game:
             self.win.blit(self.arrow_d, (mouse_x -20 , mouse_y - 40))
         else:
                 # Draw Default Cursor Substitute (Small Circle)
-            pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 5)
+            pygame.draw.circle(self.win, (0, 0, 0), (mouse_x, mouse_y), 0)
+
+        if self.mouse_is_defult == 0 :
+            self.mouse_style.draw(self.win, mouse_x, mouse_y )
 
         p = self.click
         pygame.draw.circle(self.win, (255,0,0) , (p[0],p[1]), 5, 0) # help to see where i click
