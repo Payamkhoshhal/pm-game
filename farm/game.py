@@ -7,7 +7,7 @@ from menu.menu import Menu
 from mouse.mouse import Mouse
 
 from properties.properties import WoodLog
-from bases.homebase import HomeBase
+from Bases.homebase import HomeBase
 
 
 class Game:
