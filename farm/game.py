@@ -8,7 +8,7 @@ from mouse.mouse import Mouse
 
 from properties.properties import WoodLog
 from bases.homebase import HomeBase
-
+from bases.rockbase import RockBase
 
 class Game:
 
@@ -60,7 +60,8 @@ class Game:
         # Bases        
         # home base
         self.homebase = HomeBase()
-
+        # rock base
+        self.rockbase = RockBase()
 
         # Camera Position
         self.MAP_WIDTH, self.MAP_HEIGHT = self.bg.get_size()
@@ -239,7 +240,9 @@ class Game:
 
         # Draw homebase
         self.homebase.draw(self.win, cam_x, cam_y)
-
+        # Draw rockbase 
+        self.rockbase.draw(self.win, cam_x, cam_y)
+        
         # Draw menues
         # 1- Draw home base menu
         self.menu.draw_hm_menu(self.win , self.is_tree_dragable )
@@ -271,3 +274,5 @@ class Game:
 
 g = Game()
 g.run()
+
+
