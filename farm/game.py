@@ -11,7 +11,6 @@ from properties.properties import WoodLog
 from bases.homebase import HomeBase
 from bases.rockbase import RockBase
 
-from Bases.homebase import HomeBase
 
 
 
