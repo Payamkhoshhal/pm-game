@@ -1,4 +1,4 @@
-from re import I
+
 import pygame 
 import os
 from farmer.farmer import Farmer
@@ -7,13 +7,13 @@ from menu.menu import Menu
 from mouse.mouse import Mouse
 
 from properties.properties import WoodLog
-<<<<<<< HEAD
+
 from bases.homebase import HomeBase
 from bases.rockbase import RockBase
-=======
+
 from Bases.homebase import HomeBase
 
->>>>>>> 40dcab4129a59c5ac4727f9ef735c4a40026dc58
+
 
 class Game:
 
