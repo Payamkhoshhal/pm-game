@@ -11,17 +11,27 @@ class Menu:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.show_menu_speed = 10 
         self.target_y = 630
+        self.hb_menu_options = ['tree']
+        self.hb_menu_visible  = False
 
         # hm menu
+        # tree icon
         self.tree_icon = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/menu/home-base-icons",  "tree_icon.png")),(64, 64))
-        self.hb_menu_visible  = False
         self.tree_icon_y_target = 660
         self.tree_icon_speed = 8
         self.tree_icon_x = 100 
         self.tree_icon_y = 800        
         self.rect_tree_icon = pygame.Rect(self.tree_icon_x, self.tree_icon_y, 64, 64)
-        self.hb_menu_options = ['tree']
         self.tree_icon_disabled = self.tree_icon.copy()  # Make a copy for the disabled state
+
+        # rockbase icon
+        self.rb_icon = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/RockBase",  "rockbase.png")),(64 , 64))
+        self.rb_icon_y_target = 660
+        self.rb_icon_speed = 8
+        self.rb_icon_x = 200
+        self.rb_icon_y = 800        
+        self.rect_rb_icon = pygame.Rect(self.rb_icon_x, self.rb_icon_y, 64, 64)
+        self.rb_icon_disabled = self.rb_icon.copy()  # Make a copy for the disabled state
 
     def draw(self, win):
         if self.y >= self.target_y:
@@ -37,9 +47,14 @@ class Menu:
        if self.hb_menu_visible:             
             if self.tree_icon_y >= self.tree_icon_y_target:
                 self.tree_icon_y = self.tree_icon_y - 8
+            if self.rb_icon_y  >=  self.rb_icon_y_target:
+                self.rb_icon_y = self.rb_icon_y - 8
+
             self.draw(win)
             win.blit(self.tree_icon, (self.tree_icon_x , self.tree_icon_y )) 
+            win.blit(self.rb_icon,  (self.rb_icon_x , self.rb_icon_y))
             self.rect_tree_icon = pygame.Rect(self.tree_icon_x, self.tree_icon_y, 64, 64)
+            self.rect_rb_icon = pygame.Rect(self.rb_icon_x, self.rb_icon_y, 64, 64)
             if not is_dragable:
             # Create a semi-transparent overlay for the disabled state
                 overlay = pygame.Surface(self.tree_icon.get_size(), pygame.SRCALPHA)
