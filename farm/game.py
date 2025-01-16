@@ -64,8 +64,9 @@ class Game:
         # Bases        
         # home base
         self.homebase = HomeBase()
+
         # rock base
-        self.rockbase = RockBase()
+        self.rock_base = None
 
         # Camera Position
         self.MAP_WIDTH, self.MAP_HEIGHT = self.bg.get_size()
@@ -99,10 +100,17 @@ class Game:
 
                     if self.drag_object:
                         if self.menu_result == 'tree':
-                            
                             tree_x = event.pos[0]  + self.camera_x - 75
                             tree_y = event.pos[1]  + self.camera_y - 75
                             self.trees.append(Tree(tree_x, tree_y, 150, 150))
+                            self.drag_object = False
+                            pygame.mouse.set_visible(True)                            
+                            self.mouse_is_defult = 1
+                        elif self.menu_result == 'rb':
+                            rb_x = event.pos[0] + self.camera_x  - 50
+                            rb_y = event.pos[0] + self.camera_y  - 550
+                            self.rock_base = RockBase(rb_x, rb_y , 256 , 256)
+                            print('rock base has been created')
                             self.drag_object = False
                             pygame.mouse.set_visible(True)                            
                             self.mouse_is_defult = 1
@@ -114,7 +122,11 @@ class Game:
                             if self.menu_result == 'tree' and len(self.trees) <  self.max_tree_count[self.home_base_level - 1]:
                                     self.drag_object = True
                                     self.mouse_is_defult = 0
-                                    print('drag object is tru')
+                                    print('drag object is true => tree')
+                            if self.menu_result == 'rb':
+                                    self.drag_object = True
+                                    self.mouse_is_defult = 0
+                                    print('drag object is true => rb')
                         else:
                             self.drag_object = False
 
@@ -244,8 +256,10 @@ class Game:
 
         # Draw homebase
         self.homebase.draw(self.win, cam_x, cam_y)
-        # Draw rockbase 
-        self.rockbase.draw(self.win, cam_x, cam_y)
+
+        # Draw rockbase
+        if self.rock_base: 
+            self.rock_base.draw(self.win, cam_x, cam_y)
         
         # Draw menues
         # 1- Draw home base menu

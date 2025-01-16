@@ -10,15 +10,14 @@ for x in range(5):
         pygame.image.load(os.path.join("game_assets/RockBase",  "rockbase_"+add_str +".png")),
         (256, 256)))
 
-
 class RockBase:
-    def __init__(self ):
-        self.x =  600
-        self.y =  600
-        self.width = 128
-        self.height = 128       
+    def __init__(self , x , y , w , h):
+        self.x = x # 600
+        self.y = y # 600
+        self.width = w # 128
+        self.height = h #128       
         self.rockbase_visible = True
-        self.rockbase_clicked = True
+        self.rockbase_clicked = False
         self.imgs = imgs
         self.animation_count = 0
         self.img = self.imgs[self.animation_count]

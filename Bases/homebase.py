@@ -6,8 +6,8 @@ class HomeBase:
     def __init__(self ):
         self.x =  400
         self.y =  400
-        self.width = 128
-        self.height = 128       
+        self.width =  128
+        self.height =  128       
         #self.menu_img = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/menu","MenuBar.png")),(950,170))
         self.base_home = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/buildings","base-home.png")),(100,100)) 
         self.options = ['Add tree' , 'Add nothing' , 'nothing'] 

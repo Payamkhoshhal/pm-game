@@ -11,7 +11,7 @@ class Menu:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.show_menu_speed = 10 
         self.target_y = 630
-        self.hb_menu_options = ['tree']
+        self.hb_menu_options = ['tree', 'rock_base']
         self.hb_menu_visible  = False
 
         # hm menu
@@ -33,6 +33,9 @@ class Menu:
         self.rect_rb_icon = pygame.Rect(self.rb_icon_x, self.rb_icon_y, 64, 64)
         self.rb_icon_disabled = self.rb_icon.copy()  # Make a copy for the disabled state
 
+        # rect list of all items in the menu of home base
+        self.item_rects = [self.rect_tree_icon , self.rect_rb_icon]
+
     def draw(self, win):
         if self.y >= self.target_y:
             self.y = self.y - self.show_menu_speed
@@ -43,7 +46,7 @@ class Menu:
         #self.tree_icon_y = 800
         return self.rect.collidepoint(pos)
 
-    def draw_hm_menu(self, win , is_dragable):
+    def draw_hm_menu(self, win , is_tree_dragable ):
        if self.hb_menu_visible:             
             if self.tree_icon_y >= self.tree_icon_y_target:
                 self.tree_icon_y = self.tree_icon_y - 8
@@ -55,18 +58,24 @@ class Menu:
             win.blit(self.rb_icon,  (self.rb_icon_x , self.rb_icon_y))
             self.rect_tree_icon = pygame.Rect(self.tree_icon_x, self.tree_icon_y, 64, 64)
             self.rect_rb_icon = pygame.Rect(self.rb_icon_x, self.rb_icon_y, 64, 64)
-            if not is_dragable:
+
+            if not is_tree_dragable:
             # Create a semi-transparent overlay for the disabled state
                 overlay = pygame.Surface(self.tree_icon.get_size(), pygame.SRCALPHA)
                 overlay.fill((0, 0, 0, 128))  # 50% black transparency
                 win.blit(overlay,(self.tree_icon_x , self.tree_icon_y ))
 
     def which_button_is_clicked(self, pos):
-        for i, option in enumerate(self.hb_menu_options):
-            option_rect = pygame.Rect(self.rect_tree_icon.x  , self.rect_tree_icon.y , 64, 64)
-            if option_rect.collidepoint(pos):
-                print(option)
-                return option
+        tree_rect = pygame.Rect(self.rect_tree_icon.x  , self.rect_tree_icon.y , 64, 64)
+        rb_rect = pygame.Rect(self.rect_rb_icon.x , self.rect_tree_icon.y, 64, 64)
+        if tree_rect.collidepoint(pos):
+            option = 'tree'
+            print(option)
+            return option
+        elif rb_rect.collidepoint(pos):
+            option = 'rb'
+            print(option)
+            return option
         return None
         
 
