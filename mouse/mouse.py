@@ -32,6 +32,6 @@ class Mouse:
             if self.animation_count >= len(self.imgs):
                 self.animation_count = 0
         self.img = self.imgs[self.animation_count]
-        win.blit(self.img, (mouse_x , mouse_y))
+        win.blit(self.img, (mouse_x - 20  , mouse_y - 30))
         
  

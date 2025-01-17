@@ -107,8 +107,8 @@ class Game:
                             pygame.mouse.set_visible(True)                            
                             self.mouse_is_defult = 1
                         elif self.menu_result == 'rb':
-                            rb_x = event.pos[0] + self.camera_x  - 50
-                            rb_y = event.pos[0] + self.camera_y  - 550
+                            rb_x = event.pos[0] + self.camera_x - 100
+                            rb_y = event.pos[1] + self.camera_y  - 105
                             self.rock_base = RockBase(rb_x, rb_y , 256 , 256)
                             print('rock base has been created')
                             self.drag_object = False
@@ -217,15 +217,6 @@ class Game:
                     tree.tree_clicked = False            
                 self.farmer.farmer_pre_clicked = False
 
-            #elif self.menu.is_clicked(clicked_pos):
-            #    # we don't need to disable other object since they are alrady disabled when we see this menu
-            #    self.farmer.farmer_pre_clicked = False
-            #    self.farmer.farmer_clicked = False
-            #    self.homebase.homebase_clicked = False
-
-            #    for tree in self.trees:
-            #        tree.tree_clicked = False
-
             else:
                 # disable all the objects
                 if self.farmer.farmer_clicked == True:
@@ -238,9 +229,9 @@ class Game:
                 self.homebase.homebase_clicked = False
 
     def draw(self, cam_x , cam_y):
-        self.win.blit(self.bg , (- cam_x, - cam_y))
 
-       
+        # Draw background image
+        self.win.blit(self.bg , (- cam_x, - cam_y))
 
         # Draw farmer mr.potato 
         self.farmer.draw(self.win,cam_x , cam_y , self.farmer_pos )

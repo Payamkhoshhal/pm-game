@@ -2,7 +2,7 @@ import pygame
 import os
 import time 
 from loading.load import Loading  
-from properties.properties import ShowLevel, render_text_with_stroke  as rtws
+from properties.properties import  render_text_with_stroke  as rtws
 
 
 # Colors
@@ -33,11 +33,10 @@ class Tree:
         self.tree_clicked = False
         self.rect = self.img.get_rect(topleft=(self.tree_x , self.tree_y))
         self.level = 0 
-        self.upgrade_times = [15 , 120 , 300]
-        self.is_updating = True # first time that we call this class we will wait for 15 sec
+        self.upgrade_times = [3 , 120 , 300]
+        self.is_updating = True # first time that we call this class we will wait for 3 sec
         #self.tree_updating = Loading()
         self.upgrade_start_time = time.time()
-        self.showlevel = ShowLevel()
         self.wood_collect_start_time = time.time()
         self.wood_collect = 0
 
@@ -50,7 +49,6 @@ class Tree:
                 surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
                 pygame.draw.ellipse(surface,(0,255,0,100),(0 ,  0 , 200, 120))
                 rotated_surface = pygame.transform.rotate(surface, - 20)  
-                self.showlevel.draw(win, camera_x , camera_y , self.tree_x , self.tree_y , self.level)
                 win.blit(rotated_surface,(self.tree_x - camera_x  - 150 , self.tree_y - camera_y ))
 
             self.rect = self.img.get_rect(topleft=(self.tree_x - camera_x , self.tree_y - camera_y))
@@ -63,7 +61,7 @@ class Tree:
 
             text_surface = rtws(time.strftime("%Hh %Mm %Ss", time.gmtime(remaining_time)), font, (210, 140, 70), (0, 0, 0))
             
-            win.blit(text_surface, (self.tree_x - camera_x - 40 , self.tree_y - camera_y + 100  ))
+            win.blit(text_surface, (self.tree_x - camera_x  + 35 , self.tree_y - camera_y + 100  ))
 
             self.update()
 

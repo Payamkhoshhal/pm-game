@@ -12,8 +12,8 @@ for x in range(5):
 
 class RockBase:
     def __init__(self , x , y , w , h):
-        self.x = x # 600
-        self.y = y # 600
+        self.rb_x = x # 600
+        self.rb_y = y # 600
         self.width = w # 128
         self.height = h #128       
         self.rockbase_visible = True
@@ -27,7 +27,7 @@ class RockBase:
 
     def draw(self, win , cam_x , cam_y):
         
-        self.rect = pygame.Rect(self.x - cam_x, self.y - cam_y, self.width, self.height)
+        self.rect = pygame.Rect(self.rb_x - cam_x, self.rb_y - cam_y, self.width, self.height)
         if self.rockbase_clicked:
             self.range = 100
             surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
@@ -43,7 +43,7 @@ class RockBase:
        #         if self.animation_count >= len(self.imgs):
        #             self.animation_count = 0
        #     self.img = self.imgs[self.animation_count]
-        win.blit(self.img ,(self.x -cam_x , self.y -cam_y))
+        win.blit(self.img ,(self.rb_x - cam_x   , self.rb_y - cam_y ))
 
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
