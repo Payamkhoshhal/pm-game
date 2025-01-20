@@ -24,6 +24,7 @@ class RockBase:
         self.frame_delay = 4
         self.current_delay = 0
         self.img = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/RockBase",  "rockbase.png")),(256, 256))
+        self.rect = self.img.get_rect(topleft=(self.rb_x , self.rb_y))
 
     def draw(self, win , cam_x , cam_y):
         
@@ -34,7 +35,7 @@ class RockBase:
             pygame.draw.ellipse(surface,(153, 102, 0 ,150),(0 , 0 , 300, 180))
             rotated_surface = pygame.transform.rotate(surface, - 20)  # Rotate by 30 degrees
 
-            win.blit(rotated_surface,(self.x - cam_x  - 210 , self.y - cam_y  - 70))
+            win.blit(rotated_surface,(self.rb_x - cam_x  - 210 , self.rb_y - cam_y  - 70))
        # if self.rockbase_visible:
        #     self.current_delay += 1
        #     if self.current_delay >= self.frame_delay:
