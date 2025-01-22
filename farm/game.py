@@ -89,7 +89,7 @@ class Game:
         self.home_base_level = 1
 
 
-        self.obj_on_map = {'homebase':self.homebase , 'farmer':self.farmer, 'trees':[] , 'background':'1'}
+        self.obj_on_map = {'homebase':self.homebase , 'farmer':self.farmer, 'trees':[] }
 
     def run(self):
         while self.running:
@@ -115,7 +115,7 @@ class Game:
                             rb_x = event.pos[0] + self.camera_x - 100
                             rb_y = event.pos[1] + self.camera_y  - 105
                             self.rock_base = RockBase(rb_x, rb_y , 256 , 256)
-                            self.obj_on_map['rock_base'] = '1'
+                            self.obj_on_map['rock_base'] = self.rock_base
                             print('rock base has been created')
                             self.drag_object = False
                             pygame.mouse.set_visible(True)                            
@@ -143,14 +143,14 @@ class Game:
                     else: 
                         self.is_tree_dragable = 1
 
-                    if not self.farmer.farmer_clicked:
+                    if not self.farmer.farmer_clicked: 
                         if self.farmer.farmer_pre_clicked:
                             self.farmer.is_allowed_to_move = True
                             self.farmer_pos = event.pos 
                             self.farmer.cam_x_moment = self.camera_x
                             self.farmer.cam_y_moment =  self.camera_y
                             self.farmer.farmer_pre_clicked = True
-                            print('farmer is clicked') 
+                           
 
                     
 
@@ -184,83 +184,79 @@ class Game:
  
     
     def which_object_is_clicked(self, clicked_pos):
+        background_flag = 1 
         for obj_name , obj in self.obj_on_map.items(): 
-            # in each click only one object can be select so we can have break after find out which object has been clicked
-            print(obj_name, self.obj_on_map) 
-            if obj:
-                if obj_name == 'trees':
-                    flag = 0
-                    for tree in self.trees:
-                        if tree.is_clicked(clicked_pos):
-                            # enable the tree clicked variable
-                            tree.tree_clicked = True
-                            # disable other objects
-                            self.farmer.farmer_clicked =  False 
-                            self.farmer.farmer_pre_clicked = False
-                            self.menu.hb_menu_visible = False
-                            self.homebase.homebase_clicked = False
-                            #self.rock_base.rockbase_clicked = False
-                            flag = 1
-                            
-                        else:
+            if isinstance(obj, list):
+                for tree in self.trees:
+                    if tree.is_clicked(clicked_pos):
+                        tree.tree_clicked = True
+
+                        # disable other objects
+                        self.farmer.farmer_clicked =  False 
+                        self.farmer.farmer_pre_clicked = False
+                        self.menu.hb_menu_visible = False
+                        self.homebase.homebase_clicked = False
+                        #self.rock_base.rockbase_clicked = False
+                        background_flag = 0
+                    else: 
+                        tree.tree_clicked = False
+            
+            else :
+                if obj.is_clicked(clicked_pos): 
+                    if obj_name == 'farmer':
+                        # enable the farmer clicked variable
+                        self.farmer.farmer_clicked = True
+                        self.farmer.farmer_pre_clicked = False 
+                        background_flag = 0
+                        # disable other objects 
+                        for tree in self.trees:
                             tree.tree_clicked = False
 
-                    if flag == 1:
+                        self.menu.hb_menu_visible = False
+                        self.homebase.homebase_clicked = False
+                        if self.rock_base:
+                            self.rock_base.rockbase_clicked = False
                         break
-                elif obj_name == 'background': 
-                    print('__background__')
-                    if self.farmer.farmer_clicked == True:
+                        
+                    elif obj_name == 'homebase':
+                        # homebase clicked 
+                        self.homebase.homebase_clicked = True
+                        background_flag = 0
+                        # enable main menu object
+                        self.menu.hb_menu_visible = True
+                        # disable other objects
                         self.farmer.farmer_clicked = False
-                        self.farmer.farmer_pre_clicked = True
-                    
-                    for tree in self.trees:
-                        tree.tree_clicked = False
-                    self.menu.hb_menu_visible = False
-                    self.homebase.homebase_clicked = False
-                    #self.rock_base.rockbase_clicked = False
-                    break
-                else: 
-                    print('else ---> ', obj)
-                    if obj.is_clicked(clicked_pos): 
-                        if obj_name == 'farmer':
-                            print('__farmer___') 
-                            # enable the farmer clicked variable
-                            self.farmer.farmer_clicked = True
-                            self.farmer.farmer_pre_clicked = False
-                            # disable other objects 
-                            for tree in self.trees:
-                                tree.tree_clicked = False
-
-                            self.menu.hb_menu_visible = False
-                            self.homebase.homebase_clicked = False
-                            #self.rock_base.rockbase_clicked = False
-                            break
-                        elif obj_name == 'homebase':
-                            print('__home_base')
-                            # homebase clicked 
-                            self.homebase.homebase_clicked = True
-
-                            # enable main menu object
-                            self.menu.hb_menu_visible = True
-                            # disable other objects
-                            self.farmer.farmer_clicked = False
-                            for tree in self.trees:
-                                tree.tree_clicked = False            
-                            self.farmer.farmer_pre_clicked = False
-                            #self.rock_base.rockbase_clicked = False
-                            break
-
-                        elif obj_name == 'rock_base':
-                            # homebase clicked 
-                            self.rock_base.rockbase_clicked = True
-                            # enable main menu object
-                            self.menu.hb_menu_visible = True
-                            # disable other objects
-                            self.farmer.farmer_clicked = False
-                            for tree in self.trees:
-                                tree.tree_clicked = False            
-                            self.farmer.farmer_pre_clicked = False
-                            break
+                        for tree in self.trees:
+                            tree.tree_clicked = False            
+                        self.farmer.farmer_pre_clicked = False
+                        if self.rock_base:
+                            self.rock_base.rockbase_clicked = False
+                        break
+                        
+                    elif obj_name == 'rock_base':
+                        background_flag = 0
+                        # homebase clicked 
+                        self.rock_base.rockbase_clicked = True
+                        # enable main menu object
+                        self.menu.hb_menu_visible = True
+                        # disable other objects
+                        self.farmer.farmer_clicked = False
+                        for tree in self.trees:
+                            tree.tree_clicked = False            
+                        self.farmer.farmer_pre_clicked = False
+                        break
+        if background_flag == 1:
+            print('background_flag is 1')
+            # disable all the objects
+            if self.farmer.farmer_clicked == True:
+                self.farmer.farmer_clicked = False
+                self.farmer.farmer_pre_clicked = True
+            for tree in self.trees:
+                tree.tree_clicked = False
+            self.menu.hb_menu_visible = False
+            self.homebase.homebase_clicked = False
+            if self.rock_base:
+                self.rock_base.rockbase_clicked = False
 
         '''
         flag = 0

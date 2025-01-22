@@ -32,10 +32,10 @@ class RockBase:
         if self.rockbase_clicked:
             self.range = 100
             surface = pygame.Surface((self.range*4 , self.range*4), pygame.SRCALPHA, 32) 
-            pygame.draw.ellipse(surface,(153, 102, 0 ,150),(0 , 0 , 300, 180))
+            pygame.draw.ellipse(surface,(200, 102, 0 ,200),(0 , 0 , 400, 200))
             rotated_surface = pygame.transform.rotate(surface, - 20)  # Rotate by 30 degrees
 
-            win.blit(rotated_surface,(self.rb_x - cam_x  - 210 , self.rb_y - cam_y  - 70))
+            win.blit(rotated_surface,(self.rb_x - cam_x  - 200 , self.rb_y - cam_y  - 30))
        # if self.rockbase_visible:
        #     self.current_delay += 1
        #     if self.current_delay >= self.frame_delay:
@@ -44,6 +44,7 @@ class RockBase:
        #         if self.animation_count >= len(self.imgs):
        #             self.animation_count = 0
        #     self.img = self.imgs[self.animation_count]
+        self.rect = self.img.get_rect(topleft=(self.rb_x - cam_x , self.rb_y - cam_y))
         win.blit(self.img ,(self.rb_x - cam_x   , self.rb_y - cam_y ))
 
     def is_clicked(self, pos):
