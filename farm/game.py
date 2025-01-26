@@ -6,7 +6,7 @@ from trees.tree import Tree
 from menu.menu import Menu  
 from mouse.mouse import Mouse
 
-from properties.properties import WoodLog
+from properties.properties import WoodLog , RockLog
 
 from bases.homebase import HomeBase
 from bases.rockbase import RockBase
@@ -47,6 +47,9 @@ class Game:
         # woodlog  
         self.woodlog = WoodLog()
 
+        # rocklog
+        self.rocklog = RockLog()
+        
         # tree
         self.trees = []
         #self.upgrade_times = [10 , 30]
@@ -224,6 +227,7 @@ class Game:
                         background_flag = 0
                         # enable main menu object
                         self.menu.hb_menu_visible = True
+                        self.menu.rb_menu_visible = False
                         # disable other objects
                         self.farmer.farmer_clicked = False
                         for tree in self.trees:
@@ -238,11 +242,13 @@ class Game:
                         # homebase clicked 
                         self.rock_base.rockbase_clicked = True
                         # enable main menu object
-                        self.menu.hb_menu_visible = True
+                        self.menu.hb_menu_visible = False
+                        self.menu.rb_menu_visible = True
                         # disable other objects
+                        self.homebase.homebase_clicked = False
                         self.farmer.farmer_clicked = False
                         for tree in self.trees:
-                            tree.tree_clicked = False            
+                            tree.tree_clicked = False
                         self.farmer.farmer_pre_clicked = False
                         break
         if background_flag == 1:
@@ -254,6 +260,7 @@ class Game:
             for tree in self.trees:
                 tree.tree_clicked = False
             self.menu.hb_menu_visible = False
+            self.menu.rb_menu_visible = False
             self.homebase.homebase_clicked = False
             if self.rock_base:
                 self.rock_base.rockbase_clicked = False
@@ -339,8 +346,17 @@ class Game:
             collect_wood_from_each_tree = tree.calculate_woodlog_score()
             if collect_wood_from_each_tree != 0: 
                 self.woodlog.score = self.woodlog.score + collect_wood_from_each_tree        
+
+        if self.rock_base:
+            collect_rock = self.rock_base.calculate_rocklog_score()
+           
+            self.rocklog.score = self.rocklog.score + collect_rock
+
         # Draw woodlog score
         self.woodlog.draw(self.win )
+
+        # Draw rocklog score
+        self.rocklog.draw(self.win)
 
         # Draw homebase
         self.homebase.draw(self.win, cam_x, cam_y)
@@ -352,7 +368,7 @@ class Game:
         # Draw menues
         # 1- Draw home base menu
         self.menu.draw_hm_menu(self.win , self.is_tree_dragable )
-
+        self.menu.draw_rb_menu(self.win)
 
         # Draw arrows directions
         mouse_x, mouse_y = pygame.mouse.get_pos()

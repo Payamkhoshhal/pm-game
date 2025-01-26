@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 
 imgs = []
 for x in range(5):
@@ -25,6 +26,9 @@ class RockBase:
         self.current_delay = 0
         self.img = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/RockBase",  "rockbase.png")),(256, 256))
         self.rect = self.img.get_rect(topleft=(self.rb_x , self.rb_y))
+        self.rock_collect_start_time = time.time()
+        self.rock_collect = 0
+        self.level = 1
 
     def draw(self, win , cam_x , cam_y):
         
@@ -35,7 +39,7 @@ class RockBase:
             pygame.draw.ellipse(surface,(200, 102, 0 ,200),(0 , 0 , 400, 200))
             rotated_surface = pygame.transform.rotate(surface, - 20)  # Rotate by 30 degrees
 
-            win.blit(rotated_surface,(self.rb_x - cam_x  - 200 , self.rb_y - cam_y  - 30))
+            win.blit(rotated_surface,(self.rb_x - cam_x  - 210 , self.rb_y - cam_y  - 30))
        # if self.rockbase_visible:
        #     self.current_delay += 1
        #     if self.current_delay >= self.frame_delay:
@@ -59,3 +63,14 @@ class RockBase:
                 print(option)
                 return option
         return None
+    
+    def calculate_rocklog_score(self):
+        elapsed_time = time.time() - self.rock_collect_start_time
+       
+        if elapsed_time > 5:
+            r =  elapsed_time / 5
+            print(r)
+            self.rock_collect_start_time = time.time()
+            self.rock_collect =  self.level * round(r)
+            return self.rock_collect
+        return 0

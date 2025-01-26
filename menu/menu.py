@@ -13,6 +13,7 @@ class Menu:
         self.target_y = 630
         self.hb_menu_options = ['tree', 'rock_base']
         self.hb_menu_visible  = False
+        self.rb_menu_visible  = False
 
         # hm menu
         # tree icon
@@ -78,6 +79,23 @@ class Menu:
             return option
         return None
         
+    def draw_rb_menu(self, win ):
+       if self.rb_menu_visible:             
+            #if self.tree_icon_y >= self.tree_icon_y_target:
+            #    self.tree_icon_y = self.tree_icon_y - 8
+            #if self.rb_icon_y  >=  self.rb_icon_y_target:
+            #    self.rb_icon_y = self.rb_icon_y - 8
 
+            self.draw(win)
+            #win.blit(self.tree_icon, (self.tree_icon_x , self.tree_icon_y )) 
+            #win.blit(self.rb_icon,  (self.rb_icon_x , self.rb_icon_y))
+            #self.rect_tree_icon = pygame.Rect(self.tree_icon_x, self.tree_icon_y, 64, 64)
+            #self.rect_rb_icon = pygame.Rect(self.rb_icon_x, self.rb_icon_y, 64, 64)
+
+            #if not is_tree_dragable:
+            ## Create a semi-transparent overlay for the disabled state
+            #    overlay = pygame.Surface(self.tree_icon.get_size(), pygame.SRCALPHA)
+            #    overlay.fill((0, 0, 0, 128))  # 50% black transparency
+            #    win.blit(overlay,(self.tree_icon_x , self.tree_icon_y ))
 
 

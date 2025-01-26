@@ -48,3 +48,17 @@ class WoodLog:
         sl_width , sl_heigt = score_lable.get_size()
         win.blit(score_lable, (self.x - 5 - sl_width , self.y + 12 ))
     
+
+class RockLog:
+    def __init__(self):
+        self.score = 0
+        self.x = 940
+        self.y = 50
+        self.img = pygame.transform.scale(pygame.image.load(os.path.join("game_assets/rockbase", "rock_icon.png")), (45, 45))
+    
+    def draw(self, win):
+        win.blit(self.img , (self.x , self.y))
+        font = pygame.font.Font(None, 36)
+        score_lable = font.render(f"{self.score} x" , True, (101, 67, 33))
+        sl_width , sl_heigt = score_lable.get_size()
+        win.blit(score_lable, (self.x - 5 - sl_width , self.y + 12 ))
